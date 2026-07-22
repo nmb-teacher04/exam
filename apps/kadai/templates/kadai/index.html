@@ -1,0 +1,79 @@
+{% extends "kadai/base.html" %}
+{% block content %}
+
+<!-- flashエラーを表示する -->
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<ul>
+    {% for message in messages %}
+    <li class="flash">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+
+<!-- 画像アップロード画面へのリンクを追加する -->
+<div class="col-md-10 text-right dt-image-register-btn">
+    <!-- ■　修正　■ -->
+    <a href="{{ url_for('kadai.upload_image') }}" class="btn btn-primary">画像新規登録</a>
+</div>
+<!-- 画像一覧を表示する -->
+{% for user_image in user_images %}
+<div class="card col-md-7 dt-image-content">
+    <header class="d-flex justify-content-between">
+        <div class="dt-image-username">{{ user_image.User.username }}</div>
+        <!-- 物体検知フォームを追加する -->
+        <div class="d-flex flex-row-reverse">
+            <!-- 削除ボタンのフォームを追加する -->
+            <div class="p-2">
+                <!-- ■　修正　■ -->
+                <form action="{{ url_for('kadai.delete_image', image_id=user_image.UserImage.id) }}" method="POST">
+                    {{ delete_form.csrf_token }}
+                    {% if current_user.id == user_image.User.id %}
+                    {{ delete_form.submit(class="btn btn-danger") }}
+                    {% else %}
+                    {{ delete_form.submit(class="btn btn-danger", disabled="disabled") }}
+                    {% endif %}
+                </form>
+            </div>
+            <div class="p-2">
+                <!-- ■　修正　■ -->
+                <form action="{{ url_for('kadai.detect', image_id=user_image.UserImage.id) }}" method="POST">
+                    {{ detector_form.csrf_token }}
+                    {% if current_user.id == user_image.User.id and user_image.UserImage.is_detected == False %}
+                    {{detector_form.submit(class="btn btn-primary")}}
+                    {% else %}
+                    {{ detector_form.submit(class="btn btn-primary",disabled="disabled")}}
+                    {% endif %}
+                </form>
+            </div>
+
+            <!-- ■　追加　■ -->
+            <div class="p-2">
+                <form action="{{ url_for('kadai.detectface', image_id=user_image.UserImage.id) }}" method="POST">
+                    {{ detector_form.csrf_token }}
+                    {% if current_user.id == user_image.User.id and user_image.UserImage.is_detected == False %}
+                    <!-- ■　変更ボタンの色　■ -->
+                    {{detector_form.submit2(class="btn btn-warning")}}
+                    {% else %}
+                    <!-- ■　変更ボタンの色　■ -->
+                    {{ detector_form.submit2(class="btn btn-warning",disabled="disabled")}}
+                    {% endif %}
+                </form>
+            </div>
+
+        </div>
+    </header>
+    <section>
+        <!-- ■　修正　■ -->
+        <img src="{{ url_for('kadai.image_file', filename=user_image.UserImage.image_path) }}" alt="アップロード画像" />
+    </section>
+    <!-- タグ情報を表示する -->
+    <footer>
+        {% for tag in user_image_tag_dict[user_image.UserImage.id] %}
+        #{{tag.tag_name }}
+        {% endfor %}
+    </footer>
+</div>
+{% endfor %}
+{% endblock %}

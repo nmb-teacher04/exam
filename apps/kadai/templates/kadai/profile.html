@@ -1,0 +1,22 @@
+% extends "kadai/base.html" %}
+{% block content %}
+<h1>WEB アプリ制作</h1>
+<p>１ システム開発環境</p>
+<p> (1)言語 Python</p>
+<p> (2)フレームワーク FLASK</p>
+<p> (3)データベース SQLite</p>
+<p> (4)AI モデル 物体検知、顔検知</p>
+<p> (5)CSS Bootstrap</p>
+<p> (6)オンプレミス ローカル PC</p>
+<p>２ 開発日</p>
+<p>２０２６年７月</p>
+<p>３ 開発者</p>
+<p>水野博</p>
+<hr>
+<img src="{{ url_for('static', filename='image/001.jpg') }}" alt="画像" />
+<p>４ WEB アプリ制作で工夫したこと</p>
+<p>５ まとめ</p>
+<p>ユーザの新規作成は<a href="{{ url_for('auth.signup') }}">こちら</a></p>
+<p>大原学園 WEB サイトは<a href="http://www.o-hara.ac.jp">こちら</a></p>
+<a href="{{ url_for('kadai.index') }}">戻る</a>
+{% endblock %}
